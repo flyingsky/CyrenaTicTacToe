@@ -1,0 +1,95 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.players {
+    margin: 50px auto;
+}
+
+#reset {
+    font-size: 40px;
+    font-weight: bold;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.player {
+    font-size: 40px;
+    font-weight: bold;
+    border: 1px solid black;
+    margin: 2px;
+    width: 200px;
+    text-align: center;
+}
+
+.playerX {
+    color: blue;
+    border-color: blue;
+}
+
+.playerO {
+    color: red;
+    border-color: red;
+}
+
+.play-area {
+
+}
+
+#playBoard {
+    width: 378px;
+    height: 478px;
+    background-image: url(/images/paper.png);
+}
+
+.row0 {
+    margin-top: 39px !important;
+
+}
+
+.row1 {
+
+}
+
+.row2 {
+
+}
+
+.cell {
+    width: 85px;
+    height: 85px;
+    display: inline-block;
+    margin-top: 9px;
+}
+
+.column0 {
+    margin-left: 68px;
+    /*background-color: red;*/
+}
+
+.column1 {
+    /*visibility: hidden;*/
+    /*background-color: green;*/
+    margin-left: 11px;
+    width: 93px;
+}
+
+.column2 {
+    /*visibility: hidden;*/
+    /*background-color: blue;*/
+    margin-left: 11px;
+    width: 85px;
+}
+
+.play-state-u {
+
+}
+
+.play-state-o {
+    background: no-repeat url(/images/o.png) center center;
+}
+
+.play-state-x {
+    background: no-repeat url(/images/x.png) center center;
+}
