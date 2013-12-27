@@ -1,7 +1,7 @@
 CyrenaTicTacToe
 ===============
 
-1. Install node
+1. [Install node](http://howtonode.org/how-to-install-nodejs)
 2. check out code with git or just download code
 3. cd to project directory and run command `npm install`
 4. start you server from shell `node app.js`
