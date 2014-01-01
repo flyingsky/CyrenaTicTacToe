@@ -21,7 +21,9 @@ $(function()
       x: -1
     },
     player: null,
-    cells: []
+  nextplayer: null,
+    cells: [],
+  gameOver:null
   };
 
   var socket = null;
@@ -92,10 +94,10 @@ $(function()
     var ps = cellId.replace("cell", "").split("-");
     return ps.map(function(i){return parseInt(i)});
   }
-
+  
   function clickCell(row, column) {
     console.log("click " + row + ", " + column);
-    if (board.cells[row][column] == board.state.u)
+    if ((board.cells[row][column] == board.state.u) && (board.nextplayer==board.player))
     {
       setCellState(row, column, board.player);
       sendCellState(row, column, board.player);
@@ -110,6 +112,20 @@ $(function()
     board.cells[row][column] = board.state[state];
     $('#' + getCellId(row, column)).addClass(getStateClass(state));
     console.log(board);
+  }
+  
+  function displaygameOver(result) {
+    var textResult = result;
+  // TODO: get result to display, lose or win or tie
+  if(textResult == "draw")
+  {
+  more = "";
+  } else {
+  more = " WINS!!!! ";
+  }
+  
+  var oldText = $('#playerName').text();
+    $('#playerName').text(oldText + ': ' + textResult + more);
   }
 
 
@@ -136,6 +152,14 @@ $(function()
 
     socket.on('cell', function(cell){
       setCellState(cell.row, cell.column, cell.state);
+              board.nextplayer = cell.nextplayer;
+            
+              // TODO: check game over
+              board.gameOver = cell.gameOver;
+              if((board.gameOver !== null)||(board.gameOver == "draw"))
+              {
+              displaygameOver(board.gameOver);
+              }
     });
   }
 
@@ -150,6 +174,7 @@ $(function()
       row: row,
       column: column,
       state: state
+        //state is the player
     });
   }
 
