@@ -148,7 +148,7 @@ $(function () {
 
       // TODO: check game over
       board.gameOver = cell.gameOver;
-      if ((board.gameOver !== null) || (board.gameOver == "draw")) {
+      if (board.gameOver !== null) {
         displaygameOver(board.gameOver);
       }
     });

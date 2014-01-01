@@ -57,6 +57,63 @@ var board =
   }
 })();
 
+function getRowResult(cells, row) {
+  var result = 0;
+  for (var column = 0; column < cells[row].length; column++) {
+    result += cells[row][column];
+  }
+  return result;
+}
+
+function getColumnResult(cells, column) {
+  var result = 0;
+  for (var row = 0; row < cells.length; row++) {
+    result += cells[row][column];
+  }
+  return result;
+}
+
+function getWinner(result) {
+  return result == 3 ? 'O' : (result == -3 ? 'X' : null);
+}
+
+function checkWinner() {
+  var numboard = board.cells;
+  var winner = null;
+
+  //check if anyone has won on the x and y axis
+  for (var r = 0; r < 3; r++) {
+    winner = getWinner(getRowResult(numboard, r));
+    if (!winner) {
+      winner = getWinner(getColumnResult(numboard, r));
+    }
+
+    if (winner) {
+      return winner;
+    }
+  }
+
+  //check if anyone has won on the diagonals
+  winner = getWinner(numboard[0][0] + numboard[1][1] + numboard[2][2]);
+  if (!winner) {
+    winner = getWinner(numboard[2][0] + numboard[1][1] + numboard[0][2]);
+  }
+
+  return winner;
+}
+
+function checkDraw() {
+  var draw = 0;
+  for (var r = 0; r < 3; r++) {
+    for (var c = 0; c < 3; c++) {
+      if (board.cells[r][c] != 0) {
+        draw += 1
+      }
+    }
+  }
+  return draw == 9 ? "draw" : null;
+}
+
 io.sockets.on('connection', function (socket) {
   socket.on('login', function (data) {
     console.log(data.player);
@@ -78,92 +135,19 @@ io.sockets.on('connection', function (socket) {
       board.nextplayer = "o";
     }
 
-    board.cells[data.row][data.column] = data.state;
+    board.cells[data.row][data.column] = board.state[data.state];
 
     // TODO: check game over or not
     // if game over, set flag in data, data.gameOver = x/o/xo
     console.log("CC Test");
 
-    var winner = null;
-    var draw , row0, row1, row2, c0, c1, c2, d1, d2;
-    row0 = row1 = row2 = c0 = c1 = c2 = d1 = d2 = draw = 0;
 
-    //count the number of spaces filled on the board
-    for (var r = 0; r < 3; r++) {
-      for (var c = 0; c < 3; c++) {
-        if (board.cells[r][c] == "x") {
-          draw = draw + 1
-        } else if (board.cells[r][c] == "o") {
-          draw = draw + 1
-        }
-        {
-          draw = draw
-        }
-
-      }
-    }
-
-    //create a numberic board
-    var numboard = [
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]
-    ];
-
-    for (var r = 0; r < 3; r++) {
-      for (var c = 0; c < 3; c++) {
-        if (board.cells[r][c] == "x") {
-          numboard[r][c] = -1;
-        } else if (board.cells[r][c] == "o") {
-          numboard[r][c] = 1;
-        }
-      }
-    }
-
-    //check if anyone has won on the x and y axis
-    for (var r = 0; r < 3; r++) {
-      c0 = numboard[r][0] + c0;
-      c1 = numboard[r][1] + c1;
-      c2 = numboard[r][2] + c2;
-    }
-
-    for (var c = 0; c < 3; c++) {
-      row0 = numboard[0][c] + row0;
-      row1 = numboard[1][c] + row1;
-      row2 = numboard[2][c] + row2;
-    }
-
-    //check if anyone has won on the diagonals
-    d1 = (numboard[0][0] + numboard[1][1] + numboard[2][2]);
-    d2 = (numboard[2][0] + numboard[1][1] + numboard[0][2]);
-
-    //see who has won finally
-    if (draw >= 5) {
-      var cc = -3;
-      if ((row0 == cc) || (row1 == cc) || (row2 == cc) || (c0 == cc) || (c1 == cc) || (c2 == cc) || (d1 == cc) || (d2 == cc)) {
-        winner = "X";
-      }
-      var cc = 3;
-      if ((row0 == cc) || (row1 == cc) || (row2 == cc) || (c0 == cc) || (c1 == cc) || (c2 == cc) || (d1 == cc) || (d2 == cc)) {
-        winner = "O";
-      }
-    }
-
-    // if board is full and winner is null then its a draw
-    if ((draw == 9) && (winner == null)) {
-      winner = "draw";
-    }
-
-    board.gameOver = winner;
+    board.gameOver = checkWinner() || checkDraw();
 
     //test logs
     //console.log("draw is "+draw);
-    //console.log("numboard is"+numboard[0][0]);
     //console.log("top left cell" + board.cells[0][0]);
-    console.log("row0, row1, row2, c0, c1, c2, d1, d2");
-    console.log(row0, row1, row2, c0, c1, c2, d1, d2);
-    //console.log("row 0 is" + row0);
-    console.log("winner is " + winner);
+    console.log("winner is " + board.gameOver);
 
     // send over status
     data.gameOver = board.gameOver;
